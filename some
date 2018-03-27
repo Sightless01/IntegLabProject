@@ -1,0 +1,75 @@
+class Person {
+	name
+	user
+	password
+	statusadmin =false
+	statuslead false;
+	ArrayList<Project> project
+}
+
+class Project {
+	name
+	status
+}
+
+Public class Person {
+	
+	String name;
+	String user;
+	String password;
+
+	public Person(String name, user, pass) {
+		this.name = name;
+	}
+
+	public Person(name, usr, pass, adminstat) {
+		this.status =true
+	}
+	
+
+	public String status() {
+		if() {
+
+		}
+	}
+
+	
+}
+
+class Admin extends Person {
+	status;
+
+	public Admin(name, user, pass) {
+		this.status = true;
+	}
+
+	public Project createProj(String name) {
+		return new Project(name);
+	}
+}
+
+public static v m S[] ar {
+	if(Admin.status) {
+
+	}
+
+	printMenu() {
+		1.view list
+		2.upload file
+		if(Person.leadStat) {
+			3. assign Person
+		}
+		if(Person.leadStat) {
+
+		}
+		if(Person.adminStat) {
+			6 start server
+			7 stop server
+			8 register user
+			9 create project
+
+		}
+
+	}
+
+}
