@@ -12,19 +12,50 @@ import java.io.PrintWriter;
  */
 
 public class Server {
-    public static void main(String[] args) {
-        // TODO code application logic here
-        try{
-        	ServerSocket server = new ServerSocket(60000);
+	public static ServerSocket server;
+
+	public static void startServer(){
+		try{
+			server = new ServerSocket(60000);
         	System.out.println("Server is running");
+
         	while(true){
         		MyRunnable work = new MyRunnable(server.accept());
         		Thread worker = new Thread(work);
         		worker.start();
         	}
-        }catch(Exception e){
-        	e.printStackTrace();
-        }
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+
+	public static void stopServer(){
+		try{
+			if(server != null){
+				System.out.println("Server stop running");
+				server.close();
+			}
+
+		}catch(Exception ex){
+			ex.printStackTrace();
+		}
+	}
+
+    public static void main(String[] args) {
+		Scanner input = new Scanner(System.in);
+
+		while(true){
+			System.out.print("Do you want to start the server [y]es : ");
+			char runServer = input.next().charAt(0);
+
+			if(runServer == 'y'){
+				startServer();
+				String exit = input.nextLine();
+
+			}else{
+				System.out.println("Server is not running -__- ");
+			}
+		}
     }
 
 
