@@ -1,50 +1,38 @@
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Scanner;
-import java.io.PrintWriter;
+package server;
 
-/**
- * @(#)Server.java
- *
- *
- * @author Brendon Bruce Viloria
- * @version 1.00 2018/3/27
- */
+import shared.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.util.ArrayList;
 
 public class Server {
     public static void main(String[] args) {
-        // TODO code application logic here
-        try{
-        	ServerSocket server = new ServerSocket(60000);
-        	System.out.println("Server is running");
-        	while(true){
-        		MyRunnable work = new MyRunnable(server.accept());
-        		Thread worker = new Thread(work);
-        		worker.start();
-        	}
-        }catch(Exception e){
-        	e.printStackTrace();
+        ArrayList<Person> members = null;
+        ArrayList<Project> projects = null;
+        try {
+            FileInputStream memberIn = new FileInputStream("members.obj");
+            ObjectInputStream memIn = new ObjectInputStream(memberIn);
+            members = (ArrayList<Person>) memIn.readObject();
+            FileInputStream fileIn = new FileInputStream("projects.obj");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            projects = (ArrayList<Project>) in.readObject();
+            memIn.close();
+            memberIn.close();
+            in.close();
+            fileIn.close();
+            Module module = new ModuleImplementation(members, projects);
+            Registry registry = LocateRegistry.getRegistry(9555);
+            registry.rebind("server", module);
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Employee class not found");
+            c.printStackTrace();
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
-
-
-}
-
-class MyRunnable implements Runnable{
-    	private PrintWriter writer;
-    	private Scanner reader;
-    	private Socket socket;
-
-    	MyRunnable(Socket client){
-    		try{
-    			socket = client;
-    			writer = new PrintWriter(client.getOutputStream(),true);
-    			reader = new Scanner(client.getInputStream());
-    		}catch(Exception e){
-    			e.printStackTrace();
-    		}
-    	}
-
-    	public void run(){
-    	}
 }
