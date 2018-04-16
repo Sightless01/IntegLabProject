@@ -21,7 +21,7 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 	}
 
 	@Override
-	public int login(String userName, String password) throws RemoteException, UserAlreadyLoggedInException, WrongPasswordException, UnRegisteredUserException {
+	public int login(String userName, String password) throws RemoteException, UserAlreadyLoggedInException, WrongPasswordException, UnRegisteredUserException, NotActiveUserException {
 		if(memberList.contains(new Person(userName))) {
 			if(!loggedInUsers.contains(new Person(userName))) {
 				if(getPersonByUserName(userName).adminStat) {
@@ -40,8 +40,12 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 					}
 				} else {
 					if(getPersonByUserName(userName).password.equals(password)) {
-						loggedInUsers.add(getPersonByUserName(userName));
-						return 3;
+						if(getPersonByUserName(userName).status) {
+							loggedInUsers.add(getPersonByUserName(userName));
+							return 3;
+						} else {
+							throw new NotActiveUserException();
+						}
 					} else {
 						throw new WrongPasswordException();
 					}
@@ -89,7 +93,7 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 		getPersonByUserName(userName).status = true;
 		return "The Person with the UserName of " + userName + " is now active!";
 	}
-
+	@Override
 	public String deactivateUser(String userName) throws RemoteException {
 		getPersonByUserName(userName).status = false;
 		return "The Person with the UserName of " + userName + " is now inactive!";

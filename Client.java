@@ -24,25 +24,24 @@ public class Client {
 			switch(mode) {
 				case 1: 
 					showAdminOptions();
-					
+					break;
+				default: 
+					System.out.println();
 			}
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
 
 	}
-	public void showAdminOptions() {
+	public static void showAdminOptions() {
 		System.out.println("1. start the server.");
 		System.out.println("2. stop the server.");
 		System.out.println("3. activate a user.");
 		System.out.println("4. de-activate a user.");
 		System.out.println("5. create a new Project.");
-		System.out.println("6. show The project List.")
+		System.out.println("6. show The project List.");
 	}
 
 	public void userAdminFunctions(int choice) {
-		switch(choice) {
-			
-		}
 	}
 }

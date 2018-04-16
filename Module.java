@@ -5,9 +5,11 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface Module extends Remote {
-	public int login(String userName, String password) throws RemoteException, UserAlreadyLoggedInException, WrongPasswordException, UnRegisteredUserException;
+	public int login(String userName, String password) throws RemoteException, UserAlreadyLoggedInException, WrongPasswordException, UnRegisteredUserException, NotActiveUserException;
 	public String logout(String userName) throws RemoteException;
 	public String registerPerson(String name, String userName, String password) throws RemoteException, UserAlreadyExistException;
+	public String activateUser(String userName) throws RemoteException;
+	public String deactivateUser(String userName) throws RemoteException;
 	public String createProject(String projectName) throws RemoteException, ProjectAlreadyExistException;
 	public String setLeader(String userName, String projectName) throws RemoteException, ProjectDoesNotExistException, UnRegisteredUserException;
 	public String showProjects(String userName) throws RemoteException, UnRegisteredUserException, ServerIsClosedException;
