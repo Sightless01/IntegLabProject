@@ -22,8 +22,8 @@ public class Person implements Serializable {
 		adminStat = false;
 	}
 
-	public Person(String name) {
-		this.name = name;
+	public Person(String userName) {
+		this.userName = userName;
 	}
 
 	public ArrayList<Project> getProject() {
@@ -73,5 +73,10 @@ public class Person implements Serializable {
 			bool = person.userName.equals(this.userName);
 		}
 		return bool;
+	}
+
+	@Override
+	public String toString() {
+		return this.userName;
 	}
 }

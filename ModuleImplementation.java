@@ -18,14 +18,19 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 	public ModuleImplementation(ArrayList<Person> memberList, ArrayList<Project> projectList) throws RemoteException {
 		this.memberList = memberList;
 		this.projectList = projectList;
+		System.out.print(memberList.size());
 	}
 
 	@Override
 	public int login(String userName, String password) throws RemoteException, UserAlreadyLoggedInException, WrongPasswordException, UnRegisteredUserException, NotActiveUserException {
+		System.out.println(memberList.contains(new Person(userName)));
 		if(memberList.contains(new Person(userName))) {
 			if(!loggedInUsers.contains(new Person(userName))) {
+				System.out.println("test");
 				if(getPersonByUserName(userName).adminStat) {
+					System.out.println("test");
 					if(getPersonByUserName(userName).password.equals(password)) {
+						System.out.println("test");
 						loggedInUsers.add(getPersonByUserName(userName));
 						return 1;
 					} else {
@@ -79,6 +84,18 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 	}
 
 	@Override
+	public String startServer() throws RemoteException {
+		serverStatus = true;
+		return "The server is already running!";
+	}
+
+	@Override
+	public String stopServer() throws RemoteException {
+		serverStatus = false;
+		return "The server is now closed!";
+	}
+
+	@Override
 	public String registerPerson(String name, String userName, String password) throws RemoteException, UserAlreadyExistException {
 		if(memberList.contains(new Person(userName))) {
 			throw new UserAlreadyExistException();
@@ -89,14 +106,22 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 	}
 
 	@Override
-	public String activateUser(String userName) throws RemoteException {
-		getPersonByUserName(userName).status = true;
-		return "The Person with the UserName of " + userName + " is now active!";
+	public String activateUser(String userName) throws RemoteException, UnRegisteredUserException {
+		if(memberList.contains(new Person(userName))) {
+			getPersonByUserName(userName).status = true;
+			return "The Person with the UserName of " + userName + " is now active!";
+		} else {
+			throw new UnRegisteredUserException();
+		}
 	}
 	@Override
-	public String deactivateUser(String userName) throws RemoteException {
-		getPersonByUserName(userName).status = false;
-		return "The Person with the UserName of " + userName + " is now inactive!";
+	public String deactivateUser(String userName) throws RemoteException, UnRegisteredUserException{
+		if(memberList.contains(new Person(userName))) {
+			getPersonByUserName(userName).status = false;
+			return "The Person with the UserName of " + userName + " is now inactive!";
+		} else {
+			throw new UnRegisteredUserException();
+		}
 	}
 
 	@Override
@@ -156,7 +181,7 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 	}
 
 	@Override
-	public String AssignMember(String projectName, String userName, String userToBeAssigned) throws RemoteException, ProjectDoesNotExistException, ServerIsClosedException, NotALeaderException, UnRegisteredUserException {
+	public String assignMember(String projectName, String userName, String userToBeAssigned) throws RemoteException, ProjectDoesNotExistException, ServerIsClosedException, NotALeaderException, UnRegisteredUserException {
 		if(serverStatus) {
 			if(projectList.contains(new Project(projectName))) {
 				if(getProjectByName(projectName).projectLeader.userName.equals(userName)) {
@@ -179,14 +204,14 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 	}
 
 	@Override
-	public String removeUser(String projectName, String userName, String userToBeAssigned) throws RemoteException, ProjectDoesNotExistException, ServerIsClosedException, NotALeaderException, UnRegisteredUserException {
+	public String removeUser(String projectName, String userName, String userToBeRemove) throws RemoteException, ProjectDoesNotExistException, ServerIsClosedException, NotALeaderException, UnRegisteredUserException {
 		if(serverStatus) {
 			if(projectList.contains(new Project(projectName))) {
 				if(getProjectByName(projectName).projectLeader.userName.equals(userName)) {
-					if(memberList.contains(new Person(userToBeAssigned))) {	
-						getProjectByName(projectName).members.remove(getPersonByUserName(userToBeAssigned));
-						getPersonByUserName(userToBeAssigned).projectList.remove(getProjectByName(projectName));
-						return "The person with the user name of " + userToBeAssigned + " was removed from the project " + projectName + "!";
+					if(memberList.contains(new Person(userToBeRemove))) {	
+						getProjectByName(projectName).members.remove(getPersonByUserName(userToBeRemove));
+						getPersonByUserName(userToBeRemove).projectList.remove(getProjectByName(projectName));
+						return "The person with the user name of " + userToBeRemove + " was removed from the project " + projectName + "!";
 					} else {
 						throw new UnRegisteredUserException();
 					}
@@ -232,6 +257,28 @@ public class ModuleImplementation extends UnicastRemoteObject implements Module 
 		} else {
 			throw new ServerIsClosedException();
 		}
+	}
+
+	@Override
+	public String showMembers() throws RemoteException {
+		String list = "Member Usernames: ";
+		for(Person person : memberList) {
+			list += ("\n" + person.toString());
+		}
+		return list;
+	}
+
+	@Override
+	public String showMembersOfProject(String projectName) throws RemoteException, ProjectDoesNotExistException {
+		String list = "Member Usernames: ";
+		if(projectList.contains(new Project(projectName))) {
+			for(Person person : memberList) {
+				list += ("\n" + person.toString());
+			}
+		} else {
+			throw new ProjectDoesNotExistException();
+		}
+		return list;
 	}
 
 	private Person getPersonByUserName(String userName) {

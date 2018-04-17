@@ -24,7 +24,7 @@ public class Server {
             in.close();
             fileIn.close();
             Module module = new ModuleImplementation(members, projects);
-            Registry registry = LocateRegistry.getRegistry(9555);
+            Registry registry = LocateRegistry.getRegistry();
             registry.rebind("server", module);
         } catch (IOException i) {
             i.printStackTrace();

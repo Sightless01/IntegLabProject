@@ -24,8 +24,6 @@ public class Test {
 
 		if (returnValue == JFileChooser.APPROVE_OPTION) {
 			File selectedFile = jfc.getSelectedFile();
-			System.out.println(selectedFile.getAbsolutePath());
-			System.out.println(selectedFile.getName());
 		}
 		**/
 		ArrayList<Person> members = new ArrayList<>();
